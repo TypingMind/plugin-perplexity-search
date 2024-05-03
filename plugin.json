@@ -1,0 +1,45 @@
+{
+  "uuid": "70606b50-137b-45c3-8688-545398dc85a0",
+  "id": "search_via_perplexity",
+  "iconURL": "/assets/models/perplexityai.png",
+  "system": true,
+  "emoji": "🔍",
+  "title": "Perplexity Search",
+  "userSettings": [
+    {
+      "name": "apiKey",
+      "label": "Perplexity API Key",
+      "type": "password",
+      "required": true,
+      "description": "Get your free API Key from StabilityAI: https://www.perplexity.ai/settings/api"
+    },
+    {
+      "name": "model",
+      "label": "Model",
+      "description": "Optional, default: \"sonar-medium-online\"",
+      "type": "string"
+    },
+    {
+      "name": "systemMessage",
+      "label": "System Message",
+      "description": "Optional, default: \"Be precise and concise\"",
+      "type": "string"
+    }
+  ],
+  "openaiSpec": {
+    "name": "search_via_perplexity",
+    "description": "Search for information from the internet using Perplexity.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "keyword": {
+          "type": "string",
+          "description": "The search keyword"
+        }
+      },
+      "required": ["keyword"]
+    }
+  },
+  "implementationType": "javascript",
+  "outputType": "respond_to_ai"
+}

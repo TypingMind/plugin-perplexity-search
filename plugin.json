@@ -11,7 +11,7 @@
       "label": "Perplexity API Key",
       "type": "password",
       "required": true,
-      "description": "Get your free API Key from Perplexity: https://www.perplexity.ai/settings/api"
+      "description": "Get your API Key from Perplexity: https://www.perplexity.ai/settings/api"
     },
     {
       "name": "model",

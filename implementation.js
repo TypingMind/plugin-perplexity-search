@@ -1,6 +1,6 @@
 function search_via_perplexity(params, userSettings) {
   const keyword = params.keyword;
-  const model = userSettings.model || 'sonar-medium-online';
+  const model = userSettings.model || 'llama-3-sonar-small-32k-online';
   const systemMessage = userSettings.systemMessage || 'Be precise and concise.';
   const key = userSettings.apiKey;
 

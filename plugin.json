@@ -16,7 +16,7 @@
     {
       "name": "model",
       "label": "Model",
-      "description": "Optional, default: \"sonar-medium-online\"",
+      "description": "Optional, default: \"llama-3-sonar-small-32k-online\"",
       "type": "string"
     },
     {

@@ -16,14 +16,12 @@
     {
       "name": "model",
       "label": "Model",
-      "description": "Optional, default: \"llama-3-sonar-small-32k-online\"",
-      "type": "string"
+      "description": "Optional, default: \"llama-3-sonar-small-32k-online\""
     },
     {
       "name": "systemMessage",
       "label": "System Message",
-      "description": "Optional, default: \"Be precise and concise\"",
-      "type": "string"
+      "description": "Optional, default: \"Be precise and concise\""
     }
   ],
   "openaiSpec": {

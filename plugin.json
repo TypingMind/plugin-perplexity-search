@@ -1,7 +1,7 @@
 {
   "uuid": "70606b50-137b-45c3-8688-545398dc85a0",
   "id": "search_via_perplexity",
-  "iconURL": "/assets/models/perplexityai.png",
+  "iconURL": "https://custom.typingmind.com/assets/models/perplexityai.png",
   "emoji": "🔍",
   "title": "Perplexity Search",
   "userSettings": [

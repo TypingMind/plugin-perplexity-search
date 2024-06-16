@@ -37,6 +37,21 @@
       "required": ["keyword"]
     }
   },
+  "httpAction": {
+    "id": "b156833f-9599-4155-bba9-e713dd21aa01",
+    "method": "POST",
+    "name": "",
+    "url": "https://api.perplexity.ai/chat/completions",
+    "requestBody": "{\"model\": \"{model}\",\"messages\": [{\"role\": \"system\",\"content\": \"{systemMessage}\"},{\"role\": \"user\",\"content\": \"{keyword}\"}]}",
+    "requestHeaders": "{\"accept\": \"application/json\",\"authorization\": \"Bearer {apiKey}\"}",
+    "resultTransform": {
+      "engine": "jmes",
+      "expression": "choices[*].message.content | join(' ', @)"
+    },
+    "hasResultTransform": true,
+    "hasBody": true,
+    "hasHeaders": true
+  },
   "implementationType": "javascript",
   "outputType": "respond_to_ai"
 }

@@ -28,7 +28,6 @@
   "openaiSpec": {
     "name": "search_via_perplexity",
     "description": "Search for information from the internet using Perplexity.",
-    "strict": true,
     "parameters": {
       "type": "object",
       "properties": {

@@ -33,6 +33,15 @@ function search_via_perplexity(params, userSettings) {
   })
     .then((r) => r.json())
     .then((response) => {
-      return response.choices.map((c) => c.message.content).join(' ');
+      const content = response.choices.map((c) => c.message.content).join(' ');
+      const citations = response.citations;
+
+      return (
+        content +
+        (citations
+          ? '\n\n Citations:\n' +
+            citations.map((c, index) => `[${index + 1}] ${c}`).join('\n')
+          : '')
+      );
     });
 }

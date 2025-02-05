@@ -47,8 +47,8 @@
     "requestBody": "{\"model\": \"{model}\",\"messages\": [{\"role\": \"system\",\"content\": \"{systemMessage}\"},{\"role\": \"user\",\"content\": \"{keyword}\"}]}",
     "requestHeaders": "{\"accept\": \"application/json\",\"authorization\": \"Bearer {apiKey}\"}",
     "resultTransform": {
-      "engine": "jmes",
-      "expression": "choices[*].message.content | join(' ', @)"
+      "engine": "handlebars",
+      "templateString": "{{!-- Output the main content from the first choice --}}\n{{#with (lookup choices 0)}}\n  {{message.content}}\n{{/with}}\n\n{{!-- If citations exist, output the header and list each citation --}}\n{{#if citations}}\n\nCitations:\n{{#each citations}}\n{{this}}\n{{/each}}\n{{/if}}"
     },
     "hasResultTransform": true,
     "hasBody": true,

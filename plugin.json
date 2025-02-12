@@ -15,8 +15,8 @@
     {
       "name": "model",
       "label": "Model",
-      "description": "Optional, default: \"llama-3.1-sonar-small-128k-online\"",
-      "defaultValue": "llama-3.1-sonar-small-128k-online"
+      "description": "Optional, default: \"sonar\"",
+      "defaultValue": "sonar"
     },
     {
       "name": "systemMessage",

@@ -6,7 +6,7 @@ function search_via_perplexity(params, userSettings) {
 
   if (!key) {
     throw new Error(
-      'Please set the Perplexity API Key in the plugin settings.'
+      'Please set the Perplexity API Key in the plugin settings.',
     );
   }
 
@@ -31,7 +31,16 @@ function search_via_perplexity(params, userSettings) {
       ],
     }),
   })
-    .then((r) => r.json())
+    .then((res) => {
+      if (!res.ok) {
+        return res.text().then((err) => {
+          throw new Error(
+            `Perplexity API error (${res.status}). Details: ${err}`,
+          );
+        });
+      }
+      return res.json();
+    })
     .then((response) => {
       const content = response.choices.map((c) => c.message.content).join(' ');
       const citations = response.citations;

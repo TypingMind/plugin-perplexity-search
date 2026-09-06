@@ -55,7 +55,7 @@
     "requestHeaders": "{\"accept\": \"application/json\",\"content-type\": \"application/json\",\"authorization\": \"Bearer {apiKey}\"}",
     "resultTransform": {
       "engine": "handlebars",
-      "templateString": "{{#each output}}{{#each content}}{{text}}{{/each}}{{/each}}\n\n{{#each output}}{{#if results}}{{#each results}}Title: {{title}}\nURL: {{url}}\n{{snippet}}\n\n{{/each}}{{/if}}{{/each}}"
+      "templateString": "{{#each output}}{{#each content}}{{text}}{{/each}}{{/each}}\n\n{{#each output}}{{#if results}}\n Citations:\n{{#each results}}[{{@index}}] {{url}}\n{{/each}}{{/if}}{{/each}}"
     },
     "hasResultTransform": true,
     "hasBody": true,

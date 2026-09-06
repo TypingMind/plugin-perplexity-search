@@ -66,14 +66,18 @@ function search_via_perplexity(params, userSettings) {
         .filter((c) => c.type === 'output_text')
         .map((c) => c.text || '')
         .join('');
-      const results = output
+      const citations = output
         .filter((o) => o.type === 'search_results')
         .flatMap((o) => o.results || [])
-        .map((item) =>
-          `Title: ${item.title}\nURL: ${item.url}\n${item.snippet || ''}`,
-        )
-        .join('\n\n');
+        .map((r) => r.url)
+        .filter(Boolean);
 
-      return [content, results].filter(Boolean).join('\n\n') || 'No results found.';
+      return (
+        content +
+        (citations.length
+          ? '\n\n Citations:\n' +
+            citations.map((c, index) => `[${index + 1}] ${c}`).join('\n')
+          : '')
+      );
     });
 }

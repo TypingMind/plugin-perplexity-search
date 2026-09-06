@@ -13,10 +13,22 @@
       "description": "Get your API Key from Perplexity: https://console.perplexity.ai/"
     },
     {
+      "name": "model",
+      "label": "Model",
+      "description": "Optional, default: \"perplexity/sonar\"",
+      "defaultValue": "perplexity/sonar"
+    },
+    {
+      "name": "systemMessage",
+      "label": "System Message",
+      "description": "Optional, default: \"Be precise and concise\"",
+      "defaultValue": "Be precise and concise"
+    },
+    {
       "name": "maxResults",
       "label": "Max Results",
       "type": "number",
-      "description": "Optional, default: 10 (max 20)",
+      "description": "Optional, default: 10 (max 50)",
       "defaultValue": 10
     }
   ],
@@ -38,12 +50,12 @@
     "id": "b156833f-9599-4155-bba9-e713dd21aa01",
     "method": "POST",
     "name": "",
-    "url": "https://api.perplexity.ai/search",
-    "requestBody": "{\"query\": \"{keyword}\",\"max_results\": {maxResults}}",
+    "url": "https://api.perplexity.ai/v1/responses",
+    "requestBody": "{\"model\": \"{model}\",\"instructions\": \"{systemMessage}\",\"input\": \"{keyword}\",\"tools\": [{\"type\": \"web_search\",\"max_results\": {maxResults}}],\"tool_choice\": {\"type\": \"web_search\"}}",
     "requestHeaders": "{\"accept\": \"application/json\",\"content-type\": \"application/json\",\"authorization\": \"Bearer {apiKey}\"}",
     "resultTransform": {
       "engine": "handlebars",
-      "templateString": "{{#each results}}Title: {{title}}\nURL: {{url}}\n{{snippet}}\n\n{{/each}}"
+      "templateString": "{{#each output}}{{#each content}}{{text}}{{/each}}{{/each}}\n\n{{#each output}}{{#if results}}{{#each results}}Title: {{title}}\nURL: {{url}}\n{{snippet}}\n\n{{/each}}{{/if}}{{/each}}"
     },
     "hasResultTransform": true,
     "hasBody": true,

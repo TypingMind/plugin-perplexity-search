@@ -1,8 +1,10 @@
 function search_via_perplexity(params, userSettings) {
   const keyword = params.keyword;
-  const model = userSettings.model || 'sonar';
-  const systemMessage = userSettings.systemMessage || 'Be precise and concise.';
   const key = userSettings.apiKey;
+  const maxResults = Math.min(
+    20,
+    Math.max(1, parseInt(userSettings.maxResults) || 10),
+  );
 
   if (!key) {
     throw new Error(
@@ -10,7 +12,7 @@ function search_via_perplexity(params, userSettings) {
     );
   }
 
-  return fetch('https://api.perplexity.ai/chat/completions', {
+  return fetch('https://api.perplexity.ai/search', {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
@@ -18,17 +20,8 @@ function search_via_perplexity(params, userSettings) {
       authorization: 'Bearer ' + key,
     },
     body: JSON.stringify({
-      model: model,
-      messages: [
-        {
-          role: 'system',
-          content: systemMessage,
-        },
-        {
-          role: 'user',
-          content: keyword,
-        },
-      ],
+      query: keyword,
+      max_results: maxResults,
     }),
   })
     .then((res) => {
@@ -42,15 +35,16 @@ function search_via_perplexity(params, userSettings) {
       return res.json();
     })
     .then((response) => {
-      const content = response.choices.map((c) => c.message.content).join(' ');
-      const citations = response.citations;
+      const items = response.results || [];
+      if (!items.length) {
+        return 'No results found.';
+      }
 
-      return (
-        content +
-        (citations
-          ? '\n\n Citations:\n' +
-            citations.map((c, index) => `[${index + 1}] ${c}`).join('\n')
-          : '')
-      );
+      return items
+        .map(
+          (item) =>
+            `Title: ${item.title}\nURL: ${item.url}\n${item.snippet || ''}`,
+        )
+        .join('\n\n');
     });
 }

@@ -1,8 +1,23 @@
+const LEGACY_MODELS = {
+  sonar: 'perplexity/sonar',
+  'sonar-pro': 'perplexity/sonar',
+  'sonar-reasoning': 'perplexity/sonar',
+  'sonar-reasoning-pro': 'perplexity/sonar',
+  'sonar-deep-research': 'perplexity/sonar',
+};
+
 function search_via_perplexity(params, userSettings) {
   const keyword = params.keyword;
-  const model = userSettings.model || 'sonar';
+  const model =
+    LEGACY_MODELS[userSettings.model] ||
+    userSettings.model ||
+    'perplexity/sonar';
   const systemMessage = userSettings.systemMessage || 'Be precise and concise.';
   const key = userSettings.apiKey;
+  const maxResults = Math.min(
+    50,
+    Math.max(1, parseInt(userSettings.maxResults) || 10),
+  );
 
   if (!key) {
     throw new Error(
@@ -10,7 +25,7 @@ function search_via_perplexity(params, userSettings) {
     );
   }
 
-  return fetch('https://api.perplexity.ai/chat/completions', {
+  return fetch('https://api.perplexity.ai/v1/responses', {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
@@ -19,16 +34,10 @@ function search_via_perplexity(params, userSettings) {
     },
     body: JSON.stringify({
       model: model,
-      messages: [
-        {
-          role: 'system',
-          content: systemMessage,
-        },
-        {
-          role: 'user',
-          content: keyword,
-        },
-      ],
+      instructions: systemMessage,
+      input: keyword,
+      tools: [{ type: 'web_search', max_results: maxResults }],
+      tool_choice: { type: 'web_search' },
     }),
   })
     .then((res) => {
@@ -42,12 +51,30 @@ function search_via_perplexity(params, userSettings) {
       return res.json();
     })
     .then((response) => {
-      const content = response.choices.map((c) => c.message.content).join(' ');
-      const citations = response.citations;
+      if (response.status === 'failed' || response.status === 'cancelled') {
+        const details =
+          response.error?.message ||
+          JSON.stringify(response.error) ||
+          response.status;
+        throw new Error(`Perplexity API error. Details: ${details}`);
+      }
+
+      const output = response.output || [];
+      const content = output
+        .filter((o) => o.type === 'message')
+        .flatMap((o) => o.content || [])
+        .filter((c) => c.type === 'output_text')
+        .map((c) => c.text || '')
+        .join('');
+      const citations = output
+        .filter((o) => o.type === 'search_results')
+        .flatMap((o) => o.results || [])
+        .map((r) => r.url)
+        .filter(Boolean);
 
       return (
         content +
-        (citations
+        (citations.length
           ? '\n\n Citations:\n' +
             citations.map((c, index) => `[${index + 1}] ${c}`).join('\n')
           : '')

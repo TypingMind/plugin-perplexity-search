@@ -10,19 +10,26 @@
       "label": "Perplexity API Key",
       "type": "password",
       "required": true,
-      "description": "Get your API Key from Perplexity: https://www.perplexity.ai/settings/api"
+      "description": "Get your API Key from Perplexity: https://console.perplexity.ai/"
     },
     {
       "name": "model",
       "label": "Model",
-      "description": "Optional, default: \"sonar\"",
-      "defaultValue": "sonar"
+      "description": "Optional, default: \"perplexity/sonar\"",
+      "defaultValue": "perplexity/sonar"
     },
     {
       "name": "systemMessage",
       "label": "System Message",
       "description": "Optional, default: \"Be precise and concise\"",
       "defaultValue": "Be precise and concise"
+    },
+    {
+      "name": "maxResults",
+      "label": "Max Results",
+      "type": "number",
+      "description": "Optional, default: 10 (max 50)",
+      "defaultValue": 10
     }
   ],
   "openaiSpec": {
@@ -43,12 +50,12 @@
     "id": "b156833f-9599-4155-bba9-e713dd21aa01",
     "method": "POST",
     "name": "",
-    "url": "https://api.perplexity.ai/chat/completions",
-    "requestBody": "{\"model\": \"{model}\",\"messages\": [{\"role\": \"system\",\"content\": \"{systemMessage}\"},{\"role\": \"user\",\"content\": \"{keyword}\"}]}",
-    "requestHeaders": "{\"accept\": \"application/json\",\"authorization\": \"Bearer {apiKey}\"}",
+    "url": "https://api.perplexity.ai/v1/responses",
+    "requestBody": "{\"model\": \"{model}\",\"instructions\": \"{systemMessage}\",\"input\": \"{keyword}\",\"tools\": [{\"type\": \"web_search\",\"max_results\": {maxResults}}],\"tool_choice\": {\"type\": \"web_search\"}}",
+    "requestHeaders": "{\"accept\": \"application/json\",\"content-type\": \"application/json\",\"authorization\": \"Bearer {apiKey}\"}",
     "resultTransform": {
       "engine": "handlebars",
-      "templateString": "{{!-- Output the main content from the first choice --}}\n{{#with (lookup choices 0)}}\n  {{message.content}}\n{{/with}}\n\n{{!-- If citations exist, output the header and list each citation --}}\n{{#if citations}}\n\nCitations:\n{{#each citations}}\n{{this}}\n{{/each}}\n{{/if}}"
+      "templateString": "{{#each output}}{{#each content}}{{text}}{{/each}}{{/each}}\n\n{{#each output}}{{#if results}}\n Citations:\n{{#each results}}[{{@index}}] {{url}}\n{{/each}}{{/if}}{{/each}}"
     },
     "hasResultTransform": true,
     "hasBody": true,
